@@ -1,0 +1,236 @@
+
+<style>
+  * { box-sizing: border-box; }
+  .tracker { padding: 1rem 0; font-family: var(--font-sans); }
+  .header { margin-bottom: 1.5rem; }
+  .header h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 4px; }
+  .header p { font-size: 13px; color: var(--color-text-secondary); margin: 0; }
+  .progress-bar-wrap { background: var(--color-background-secondary); border-radius: 99px; height: 6px; margin: 1rem 0 1.5rem; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: #1D9E75; border-radius: 99px; transition: width 0.4s ease; }
+  .progress-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 0.5rem; }
+  .phase { margin-bottom: 1.5rem; }
+  .phase-title { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-secondary); margin: 0 0 8px; padding: 0; }
+  .week-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 12px 14px; margin-bottom: 8px; }
+  .week-label { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); margin: 0 0 8px; }
+  .task { display: flex; align-items: flex-start; gap: 8px; padding: 4px 0; cursor: pointer; }
+  .task:hover .task-text { color: var(--color-text-primary); }
+  .task input[type=checkbox] { margin-top: 2px; flex-shrink: 0; accent-color: #1D9E75; cursor: pointer; }
+  .task-text { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; transition: color 0.15s; user-select: none; }
+  .task-text.done { text-decoration: line-through; color: var(--color-text-tertiary); }
+  .tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 1px 6px; border-radius: 4px; margin-left: 4px; vertical-align: middle; }
+  .tag-ig { background: #EEEDFE; color: #3C3489; }
+  .tag-wa { background: #E1F5EE; color: #085041; }
+  .tag-pod { background: #FAEEDA; color: #633806; }
+  .tag-web { background: #E6F1FB; color: #0C447C; }
+  .tag-evt { background: #FCEBEB; color: #791F1F; }
+  .tag-li { background: #E6F1FB; color: #185FA5; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 1.5rem; }
+  .kpi-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; }
+  .kpi-label { font-size: 11px; color: var(--color-text-secondary); margin: 0 0 4px; }
+  .kpi-val { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0; }
+  .kpi-target { font-size: 11px; color: var(--color-text-tertiary); }
+  .reset-btn { font-size: 12px; color: var(--color-text-tertiary); background: none; border: none; cursor: pointer; padding: 0; margin-top: 1rem; }
+  .reset-btn:hover { color: var(--color-text-secondary); }
+</style>
+
+<div class="tracker">
+  <h2 class="sr-only" style="position:absolute;left:-9999px">Tracker de 8 semanas — blockchain.pt</h2>
+  <div class="header">
+    <h2>Plano blockchain.pt — 8 semanas</h2>
+    <p>Maio – Junho 2026 · Técnico de Informação / Comunidade & Conteúdo</p>
+  </div>
+
+  <p class="progress-label" id="progress-label">0 de 38 tarefas concluídas</p>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog" style="width:0%"></div></div>
+
+  <div id="board"></div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card"><p class="kpi-label">Instagram</p><p class="kpi-val">200</p><p class="kpi-target">seguidores (mín.)</p></div>
+    <div class="kpi-card"><p class="kpi-label">WhatsApp</p><p class="kpi-val">50</p><p class="kpi-target">membros ativos</p></div>
+    <div class="kpi-card"><p class="kpi-label">Webinar</p><p class="kpi-val">30</p><p class="kpi-target">participantes ao vivo</p></div>
+    <div class="kpi-card"><p class="kpi-label">Podcast</p><p class="kpi-val">2</p><p class="kpi-target">episódios publicados</p></div>
+    <div class="kpi-card"><p class="kpi-label">LinkedIn</p><p class="kpi-val">3</p><p class="kpi-target">artigos</p></div>
+    <div class="kpi-card"><p class="kpi-label">Speakers</p><p class="kpi-val">3</p><p class="kpi-target">confirmados</p></div>
+  </div>
+
+  <button class="reset-btn" onclick="resetAll()">↺ limpar progresso</button>
+</div>
+
+<script>
+const phases = [
+  {
+    title: "Fase 1 — Fundação",
+    weeks: [
+      {
+        label: "Semana 1 · 28 abr",
+        tasks: [
+          { text: "Criar conta Instagram com bio + link WhatsApp", tag: "ig" },
+          { text: "Criar grupo WhatsApp com nome, regras e mensagem de boas-vindas", tag: "wa" },
+          { text: "Definir identidade visual no Canva (paleta, tipografia, templates)", tag: "ig" },
+          { text: "Auditoria ao website e LinkedIn existentes", tag: "web" },
+          { text: "Contactar os primeiros 3 candidatos a speaker/entrevista", tag: "evt" },
+        ]
+      },
+      {
+        label: "Semana 2 · 5 mai",
+        tasks: [
+          { text: "Publicar os primeiros 3 posts no Instagram", tag: "ig" },
+          { text: "Gravar a 1.ª entrevista", tag: "pod" },
+          { text: "Configurar plataforma de podcast (Anchor / Buzzsprout)", tag: "pod" },
+          { text: "Recrutar os primeiros 10–15 membros WhatsApp via rede pessoal", tag: "wa" },
+          { text: "Confirmar pelo menos 1 speaker para o webinar", tag: "evt" },
+        ]
+      }
+    ]
+  },
+  {
+    title: "Fase 2 — Crescimento",
+    weeks: [
+      {
+        label: "Semana 3 · 12 mai",
+        tasks: [
+          { text: "3 posts Instagram — tema: identidade digital com blockchain", tag: "ig" },
+          { text: "Gravar a 2.ª entrevista", tag: "pod" },
+          { text: "Publicar 1 artigo no LinkedIn sobre a Portuguese Digital Wallet", tag: "li" },
+          { text: "Primeiro desafio/pergunta na comunidade WhatsApp", tag: "wa" },
+        ]
+      },
+      {
+        label: "Semana 4 · 19 mai",
+        tasks: [
+          { text: "Publicar episódio 1 do podcast", tag: "pod" },
+          { text: "Anunciar o webinar no Instagram e no WhatsApp", tag: "evt" },
+          { text: "Abrir página de registo do webinar no website", tag: "web" },
+          { text: "Gravar a 3.ª entrevista", tag: "pod" },
+          { text: "Confirmar os 3 speakers do webinar", tag: "evt" },
+        ]
+      },
+      {
+        label: "Semana 5 · 26 mai",
+        tasks: [
+          { text: "3 posts de contagem decrescente para o webinar", tag: "ig" },
+          { text: "Publicar clips teaser com os speakers (30–60 seg.)", tag: "ig" },
+          { text: "Enviar convite formal a professores e associações de TI", tag: "evt" },
+          { text: "Gravar a 4.ª entrevista", tag: "pod" },
+        ]
+      }
+    ]
+  },
+  {
+    title: "Fase 3 — Evento",
+    weeks: [
+      {
+        label: "Semana 6 · 2 jun",
+        tasks: [
+          { text: "Ensaio técnico com os 3 speakers", tag: "evt" },
+          { text: "Publicar episódio 2 do podcast", tag: "pod" },
+          { text: "Publicar programa completo do webinar", tag: "web" },
+          { text: "Push final de registos: Instagram + WhatsApp + LinkedIn", tag: "ig" },
+        ]
+      },
+      {
+        label: "Semana 7 · 9 jun — Semana do Webinar",
+        tasks: [
+          { text: "Realização do webinar (sugestão: 11 de junho)", tag: "evt" },
+          { text: "Cobertura ao vivo no Instagram Stories", tag: "ig" },
+          { text: "Publicar gravação no YouTube/LinkedIn (até 48h depois)", tag: "web" },
+          { text: "Clips dos melhores momentos nas redes", tag: "ig" },
+          { text: "Follow-up WhatsApp: agradecimentos + próximos passos", tag: "wa" },
+        ]
+      }
+    ]
+  },
+  {
+    title: "Fase 4 — Consolidação",
+    weeks: [
+      {
+        label: "Semana 8 · 16 jun",
+        tasks: [
+          { text: "Publicar destaques e agradecimentos do webinar", tag: "ig" },
+          { text: "Gravar e publicar a 5.ª entrevista (se aplicável)", tag: "pod" },
+          { text: "Redigir relatório de resultados com KPIs vs objetivos", tag: "web" },
+          { text: "Preparar proposta de continuidade para os próximos 3 meses", tag: "evt" },
+        ]
+      }
+    ]
+  }
+];
+
+const tagLabels = { ig: "Instagram", wa: "WhatsApp", pod: "Podcast", web: "Website", evt: "Webinar", li: "LinkedIn" };
+
+let state = {};
+const STORAGE_KEY = "blockchain_pt_tracker_v1";
+
+async function loadState() {
+  try {
+    const r = await window.storage.get(STORAGE_KEY);
+    if (r) state = JSON.parse(r.value);
+  } catch(e) { state = {}; }
+}
+
+async function saveState() {
+  try { await window.storage.set(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function taskId(phaseIdx, weekIdx, taskIdx) {
+  return `p${phaseIdx}_w${weekIdx}_t${taskIdx}`;
+}
+
+function countAll() {
+  let total = 0, done = 0;
+  phases.forEach((ph, pi) => ph.weeks.forEach((wk, wi) => wk.tasks.forEach((_, ti) => {
+    total++;
+    if (state[taskId(pi, wi, ti)]) done++;
+  })));
+  return { total, done };
+}
+
+function render() {
+  const board = document.getElementById("board");
+  board.innerHTML = "";
+  phases.forEach((ph, pi) => {
+    const phDiv = document.createElement("div");
+    phDiv.className = "phase";
+    phDiv.innerHTML = `<p class="phase-title">${ph.title}</p>`;
+    ph.weeks.forEach((wk, wi) => {
+      const card = document.createElement("div");
+      card.className = "week-card";
+      card.innerHTML = `<p class="week-label">${wk.label}</p>`;
+      wk.tasks.forEach((task, ti) => {
+        const id = taskId(pi, wi, ti);
+        const checked = !!state[id];
+        const row = document.createElement("label");
+        row.className = "task";
+        row.innerHTML = `<input type="checkbox" ${checked ? "checked" : ""}>
+          <span class="task-text ${checked ? "done" : ""}">${task.text} <span class="tag tag-${task.tag}">${tagLabels[task.tag]}</span></span>`;
+        row.querySelector("input").addEventListener("change", async (e) => {
+          state[id] = e.target.checked;
+          row.querySelector(".task-text").className = "task-text" + (e.target.checked ? " done" : "");
+          updateProgress();
+          await saveState();
+        });
+        card.appendChild(row);
+      });
+      phDiv.appendChild(card);
+    });
+    board.appendChild(phDiv);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const { total, done } = countAll();
+  const pct = Math.round((done / total) * 100);
+  document.getElementById("prog").style.width = pct + "%";
+  document.getElementById("progress-label").textContent = `${done} de ${total} tarefas concluídas`;
+}
+
+async function resetAll() {
+  state = {};
+  try { await window.storage.delete(STORAGE_KEY); } catch(e) {}
+  render();
+}
+
+loadState().then(render);
+</script>
