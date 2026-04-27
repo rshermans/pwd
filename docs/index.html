@@ -551,6 +551,11 @@
         <button class="tab active" onclick="showTab('tarefas')">Tarefas</button>
         <button class="tab" onclick="showTab('kpis')">KPIs</button>
         <button class="tab" onclick="showTab('evidencias')">Evidências</button>
+        <button id="admin-tab" class="tab" style="display:none; color:var(--amber);" onclick="showTab('admin')">Admin</button>
+    </div>
+
+    <div id="admin-notice" style="text-align:center; margin-top:-1.5rem; margin-bottom:2rem; font-size:0.8rem; color:var(--text-dim);">
+        <span id="mode-badge" class="badge" style="background:rgba(255,255,255,0.05); color:var(--text-dim); border-color:var(--border);">Somente Leitura</span>
     </div>
 
     <div id="sec-tarefas" class="section active"></div>
@@ -565,13 +570,50 @@
     </div>
 
     <div id="sec-evidencias" class="section">
-        <div class="log-row">
+        <div class="log-row" id="ev-input-row">
             <input type="text" id="ev-date" placeholder="Data (ex: 02/05)">
             <textarea id="ev-text" placeholder="Descreve o que foi feito, resultado, link..."></textarea>
             <button onclick="addEvidence()">Adicionar</button>
         </div>
         <div class="ev-list" id="ev-list"></div>
         <button class="export-btn" onclick="exportReport()">Copiar relatório para a área de transferência</button>
+    </div>
+
+    <div id="sec-admin" class="section">
+        <div class="overall-bar" style="border-color:var(--amber);">
+            <h3 style="font-family:'Outfit'; margin-bottom:1rem;">Painel de Administração</h3>
+            <p style="font-size:0.9rem; color:var(--text-dim); margin-bottom:1.5rem;">
+                Como administrador, podes alterar o estado do projeto. Para que as tuas alterações sejam visíveis para todos, deves exportar o estado e atualizar o ficheiro <code>docs/data/state.json</code> no GitHub.
+            </p>
+            <button onclick="exportStateJSON()" style="background:var(--amber); width:100%;">Exportar Estado (JSON)</button>
+        </div>
+        
+        <div id="export-modal" style="display:none; margin-top:2rem;">
+            <p style="font-size:0.8rem; color:var(--text-dim); margin-bottom:0.5rem;">Copia o código abaixo e cola-o no ficheiro <code>docs/data/state.json</code>:</p>
+            <textarea id="export-json" style="width:100%; height:300px; font-family:monospace; font-size:0.75rem; background:rgba(0,0,0,0.2);" readonly></textarea>
+            <button onclick="copyExportJSON()" class="outline" style="margin-top:1rem; width:100%;">Copiar para Área de Transferência</button>
+        </div>
+    </div>
+
+    <!-- Giscus Comments Section -->
+    <div style="margin-top: 5rem; padding-top: 3rem; border-top: 1px solid var(--border);">
+        <h3 style="font-family:'Outfit'; text-align:center; margin-bottom:2rem;">Comentários e Feedback</h3>
+        <div class="giscus"></div>
+        <script src="https://giscus.app/client.js"
+                data-repo="rshermans/pwd"
+                data-repo-id="R_kgDONGv7qA"
+                data-category="General"
+                data-category-id="DIC_kwDONGv7qM4CkS0l"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="transparent_dark"
+                data-lang="pt"
+                crossorigin="anonymous"
+                async>
+        </script>
     </div>
 
     <!-- Quick Repository Links -->
@@ -658,12 +700,50 @@ const KPIS = [
 
 const KEY = 'pwd_dashboard_state_v1';
 let state = {tasks:{}, kpis:{}, evidence:[]};
+let isAdmin = false;
 
-function load() {
+async function load() {
+    // 1. Check if admin
+    const params = new URLSearchParams(window.location.search);
+    isAdmin = params.get('admin') === '1' || params.get('p') === 'pwd2026';
+    
+    if (isAdmin) {
+        document.getElementById('admin-tab').style.display = 'block';
+        const badge = document.getElementById('mode-badge');
+        badge.innerText = 'Modo Administrador';
+        badge.style.color = 'var(--amber)';
+        badge.style.borderColor = 'var(--amber)';
+        badge.style.background = 'rgba(245, 158, 11, 0.1)';
+    } else {
+        // Hide inputs if not admin
+        document.querySelector('#sec-kpis .input-row').style.display = 'none';
+        document.querySelector('#ev-input-row').style.display = 'none';
+    }
+
+    // 2. Load Remote State
+    try {
+        const resp = await fetch('data/state.json?t=' + Date.now());
+        if (resp.ok) {
+            const remoteState = await resp.json();
+            state = remoteState;
+        }
+    } catch (e) {
+        console.error("Erro ao carregar estado remoto:", e);
+    }
+
+    // 3. Load Local Overrides (optional, for draft changes)
     try {
         const s = localStorage.getItem(KEY);
-        if(s) state = JSON.parse(s);
+        if(s) {
+            const localState = JSON.parse(s);
+            // Only merge if it's recent? For now, let's keep it simple.
+            // If admin, local changes are preserved.
+            if (isAdmin) {
+                state = { ...state, ...localState };
+            }
+        }
     } catch(e) {}
+
     render();
 }
 
@@ -720,9 +800,10 @@ function renderTasks() {
         w.tasks.forEach((t,i) => {
             const k = w.id+'_'+i;
             const ck = state.tasks[k] ? 'checked' : '';
+            const dis = isAdmin ? '' : 'disabled';
             html += `
                 <div class="task ${ck?'done':''}">
-                    <input type="checkbox" id="${k}" ${ck} onchange="toggleTask('${k}')">
+                    <input type="checkbox" id="${k}" ${ck} onchange="toggleTask('${k}')" ${dis}>
                     <label for="${k}">${t}</label>
                 </div>`;
         });
@@ -775,7 +856,7 @@ function renderEvidence() {
         <div class="ev-item">
             <div style="flex-shrink:0;"><span class="ev-date">${e.date}</span></div>
             <div class="ev-text">${e.text}</div>
-            <button class="ev-del" onclick="delEvidence(${i})" title="Remover">×</button>
+            ${isAdmin ? `<button class="ev-del" onclick="delEvidence(${i})" title="Remover">×</button>` : ''}
         </div>`).join('');
 }
 
@@ -799,11 +880,25 @@ function today() {
 
 function showTab(name) {
     document.querySelectorAll('.tab').forEach(t => {
-        t.classList.toggle('active', t.getAttribute('onclick').includes(name));
+        t.classList.toggle('active', t.getAttribute('onclick').includes(`'${name}'`));
     });
-    ['tarefas', 'kpis', 'evidencias'].forEach(s => {
-        document.getElementById('sec-'+s).classList.toggle('active', s === name);
+    ['tarefas', 'kpis', 'evidencias', 'admin'].forEach(s => {
+        const el = document.getElementById('sec-'+s);
+        if(el) el.classList.toggle('active', s === name);
     });
+}
+
+function exportStateJSON() {
+    const json = JSON.stringify(state, null, 4);
+    document.getElementById('export-json').value = json;
+    document.getElementById('export-modal').style.display = 'block';
+}
+
+function copyExportJSON() {
+    const el = document.getElementById('export-json');
+    el.select();
+    document.execCommand('copy');
+    alert('JSON copiado! Agora cola-o no ficheiro docs/data/state.json e faz commit.');
 }
 
 function exportReport() {

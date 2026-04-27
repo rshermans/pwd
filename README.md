@@ -39,11 +39,21 @@ Para facilitar a navegação, os artefactos estão organizados por canal:
 
 ---
 
-## 🛠️ Como Contribuir / Acompanhar
+## 🛠️ Dashboard e Acompanhamento
 
-1. **Tarefas**: Verifique o Board para saber o que está `Em curso`.
-2. **Revisão**: Sempre que um conteúdo for terminado, o ficheiro correspondente será colocado na pasta do canal. Sinta-se à vontade para deixar comentários ou sugestões nos *Issues* ou diretamente nos ficheiros.
-3. **Artefactos**: Todos os ficheiros finais (PDFs, imagens) estarão na pasta `assets` ou nas pastas de conteúdo respetivas.
+O dashboard interativo em `docs/index.html` permite visualizar o progresso real do projeto em relação às tarefas e KPIs.
+
+### Como atualizar o Dashboard (Admin)
+1. Aceda ao dashboard com o parâmetro de administrador: `docs/index.html?p=pwd2026`
+2. Marque as tarefas concluídas ou atualize os valores de KPI.
+3. Vá ao novo separador **Admin**.
+4. Clique em **Exportar Estado (JSON)**.
+5. Copie o código gerado.
+6. Substitua o conteúdo do ficheiro [docs/data/state.json](./docs/data/state.json) pelo código copiado.
+7. Faça commit e push para o GitHub.
+
+### Comentários e Feedback
+Utilizamos o **Giscus** no fundo do dashboard para permitir comentários. O feedback é sincronizado diretamente com as *Discussions* deste repositório.
 
 ---
 *Atualizado em: Abril 2026 | Gestão de Projecto blockchain.pt*
