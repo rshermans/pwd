@@ -6,7 +6,8 @@ Bem-vindo ao repositório central de acompanhamento do projeto **pwd**. Este esp
 
 ## 🚀 Acesso Rápido
 
-- **[Board de Tarefas (Kanban)](#)**: *(https://github.com/users/rshermans/projects/3)*
+- **[🌐 Ver Dashboard Interativo (Live)](https://rshermans.github.io/pwd/)**
+- **[Board de Tarefas (Kanban)](https://github.com/users/rshermans/projects/3)**
 - **[KPIs e Objetivos](#kpis-e-objetivos)**
 - **[Estrutura de Conteúdos](#-estrutura-de-conteúdos)**
 
