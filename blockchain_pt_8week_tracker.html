@@ -46,12 +46,12 @@
   <div id="board"></div>
 
   <div class="kpi-grid">
-    <div class="kpi-card"><p class="kpi-label">Instagram</p><p class="kpi-val">200</p><p class="kpi-target">seguidores (mín.)</p></div>
-    <div class="kpi-card"><p class="kpi-label">WhatsApp</p><p class="kpi-val">50</p><p class="kpi-target">membros ativos</p></div>
-    <div class="kpi-card"><p class="kpi-label">Webinar</p><p class="kpi-val">30</p><p class="kpi-target">participantes ao vivo</p></div>
-    <div class="kpi-card"><p class="kpi-label">Podcast</p><p class="kpi-val">2</p><p class="kpi-target">episódios publicados</p></div>
-    <div class="kpi-card"><p class="kpi-label">LinkedIn</p><p class="kpi-val">3</p><p class="kpi-target">artigos</p></div>
-    <div class="kpi-card"><p class="kpi-label">Speakers</p><p class="kpi-val">3</p><p class="kpi-target">confirmados</p></div>
+    <a href="conteudo/instagram/index.html" style="text-decoration: none;"><div class="kpi-card"><p class="kpi-label">Instagram</p><p class="kpi-val">200</p><p class="kpi-target">seguidores (mín.)</p></div></a>
+    <a href="conteudo/whatsapp/index.html" style="text-decoration: none;"><div class="kpi-card"><p class="kpi-label">WhatsApp</p><p class="kpi-val">50</p><p class="kpi-target">membros ativos</p></div></a>
+    <a href="conteudo/webinar/index.html" style="text-decoration: none;"><div class="kpi-card"><p class="kpi-label">Webinar</p><p class="kpi-val">30</p><p class="kpi-target">participantes ao vivo</p></div></a>
+    <a href="conteudo/podcast/index.html" style="text-decoration: none;"><div class="kpi-card"><p class="kpi-label">Podcast</p><p class="kpi-val">2</p><p class="kpi-target">episódios publicados</p></div></a>
+    <a href="conteudo/linkedin/index.html" style="text-decoration: none;"><div class="kpi-card"><p class="kpi-label">LinkedIn</p><p class="kpi-val">3</p><p class="kpi-target">artigos</p></div></a>
+    <a href="conteudo/webinar/index.html" style="text-decoration: none;"><div class="kpi-card"><p class="kpi-label">Speakers</p><p class="kpi-val">3</p><p class="kpi-target">confirmados</p></div></a>
   </div>
 
   <div style="margin-top: 2rem; padding: 1.5rem; background: var(--color-background-secondary); border-radius: var(--border-radius-lg); border: 1px solid var(--color-border-tertiary);">
@@ -200,6 +200,14 @@ const phases = [
 ];
 
 const tagLabels = { ig: "Instagram", wa: "WhatsApp", pod: "Podcast", web: "Website", evt: "Webinar", li: "LinkedIn" };
+const tagLinks = { 
+  ig: "conteudo/instagram/index.html", 
+  wa: "conteudo/whatsapp/index.html", 
+  pod: "conteudo/podcast/index.html", 
+  web: "conteudo/videos/index.html", 
+  evt: "conteudo/webinar/index.html", 
+  li: "conteudo/linkedin/index.html" 
+};
 
 let state = {};
 const STORAGE_KEY = "blockchain_pt_tracker_v1";
@@ -242,10 +250,11 @@ function render() {
       wk.tasks.forEach((task, ti) => {
         const id = taskId(pi, wi, ti);
         const checked = !!state[id];
-        const row = document.createElement("label");
+        const row = document.createElement("div");
         row.className = "task";
-        row.innerHTML = `<input type="checkbox" ${checked ? "checked" : ""}>
-          <span class="task-text ${checked ? "done" : ""}">${task.text} <span class="tag tag-${task.tag}">${tagLabels[task.tag]}</span></span>`;
+        row.innerHTML = `<input type="checkbox" ${checked ? "checked" : ""} id="check-${id}">
+          <label for="check-${id}" class="task-text ${checked ? "done" : ""}" style="flex: 1; cursor: pointer;">${task.text}</label>
+          <a href="${tagLinks[task.tag] || '#'}" class="tag tag-${task.tag}" style="text-decoration: none; transition: transform 0.1s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">${tagLabels[task.tag]}</a>`;
         row.querySelector("input").addEventListener("change", async (e) => {
           state[id] = e.target.checked;
           row.querySelector(".task-text").className = "task-text" + (e.target.checked ? " done" : "");

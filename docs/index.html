@@ -689,18 +689,18 @@ const WEEKS = [
 ];
 
 const KPIS = [
-    {id:'ig_seg', label:'Instagram — seguidores', target:200, unit:''},
-    {id:'ig_posts', label:'Instagram — posts publicados', target:20, unit:''},
-    {id:'ig_eng', label:'Instagram — engagement rate', target:5, unit:'%'},
-    {id:'wa_mem', label:'WhatsApp — membros ativos', target:50, unit:''},
-    {id:'wa_int', label:'WhatsApp — interações/semana', target:3, unit:''},
-    {id:'pod_ep', label:'Podcast — episódios publicados', target:2, unit:''},
-    {id:'ent', label:'Entrevistas gravadas e publicadas', target:5, unit:''},
-    {id:'web_reg', label:'Webinar — registos', target:50, unit:''},
-    {id:'web_live', label:'Webinar — participantes ao vivo', target:30, unit:''},
-    {id:'web_sp', label:'Webinar — speakers confirmados', target:3, unit:''},
-    {id:'li_art', label:'LinkedIn — artigos publicados', target:3, unit:''},
-    {id:'web_lp', label:'Website — landing page webinar', target:1, unit:''}
+    {id:'ig_seg', label:'Instagram — seguidores', target:200, unit:'', link:'../conteudo/instagram/index.html'},
+    {id:'ig_posts', label:'Instagram — posts publicados', target:20, unit:'', link:'../conteudo/instagram/index.html'},
+    {id:'ig_eng', label:'Instagram — engagement rate', target:5, unit:'%', link:'../conteudo/instagram/index.html'},
+    {id:'wa_mem', label:'WhatsApp — membros ativos', target:50, unit:'', link:'../conteudo/whatsapp/index.html'},
+    {id:'wa_int', label:'WhatsApp — interações/semana', target:3, unit:'', link:'../conteudo/whatsapp/index.html'},
+    {id:'pod_ep', label:'Podcast — episódios publicados', target:2, unit:'', link:'../conteudo/podcast/index.html'},
+    {id:'ent', label:'Entrevistas gravadas e publicadas', target:5, unit:'', link:'../conteudo/podcast/index.html'},
+    {id:'web_reg', label:'Webinar — registos', target:50, unit:'', link:'../conteudo/webinar/index.html'},
+    {id:'web_live', label:'Webinar — participantes ao vivo', target:30, unit:'', link:'../conteudo/webinar/index.html'},
+    {id:'web_sp', label:'Webinar — speakers confirmados', target:3, unit:'', link:'../conteudo/webinar/index.html'},
+    {id:'li_art', label:'LinkedIn — artigos publicados', target:3, unit:'', link:'../conteudo/linkedin/index.html'},
+    {id:'web_lp', label:'Website — landing page webinar', target:1, unit:'', link:'../conteudo/videos/index.html'}
 ];
 
 const KEY = 'pwd_dashboard_state_v1';
@@ -828,16 +828,18 @@ function renderKPIs() {
         const cur = state.kpis[k.id] || 0;
         const pct = Math.min(100, Math.round(cur/k.target*100));
         grid.innerHTML += `
-            <div class="kpi-card">
-                <div class="kpi-lbl">${k.label}</div>
-                <div class="kpi-vals">
-                    <span class="kpi-cur">${cur}${k.unit}</span>
-                    <span class="kpi-tgt">/ ${k.target}${k.unit}</span>
+            <a href="${k.link || '#'}" style="text-decoration: none; color: inherit;">
+                <div class="kpi-card">
+                    <div class="kpi-lbl">${k.label}</div>
+                    <div class="kpi-vals">
+                        <span class="kpi-cur">${cur}${k.unit}</span>
+                        <span class="kpi-tgt">/ ${k.target}${k.unit}</span>
+                    </div>
+                    <div class="kpi-bar">
+                        <div class="kpi-bar-fill${pct<50?' warn':''}" style="width:${pct}%"></div>
+                    </div>
                 </div>
-                <div class="kpi-bar">
-                    <div class="kpi-bar-fill${pct<50?' warn':''}" style="width:${pct}%"></div>
-                </div>
-            </div>`;
+            </a>`;
         sel.innerHTML += `<option value="${k.id}">${k.label}</option>`;
     });
 }
