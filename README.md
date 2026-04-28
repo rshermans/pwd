@@ -44,7 +44,7 @@ Para facilitar a navegação, os artefactos estão organizados por canal:
 O dashboard interativo em `docs/index.html` permite visualizar o progresso real do projeto em relação às tarefas e KPIs.
 
 ### Como atualizar o Dashboard (Admin)
-1. Aceda ao dashboard com o parâmetro de administrador: `docs/index.html?p=pwd2026`
+1. Aceda ao dashboard com o parâmetro de administrador: 
 2. Marque as tarefas concluídas ou atualize os valores de KPI.
 3. Vá ao novo separador **Admin**.
 4. Clique em **Exportar Estado (JSON)**.
