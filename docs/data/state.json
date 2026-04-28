@@ -1,5 +1,14 @@
 {
-    "tasks": {},
+    "tasks": {
+        "w1_0": true
+    },
     "kpis": {},
-    "evidence": []
+    "evidence": [
+        {
+            "date": "27/042026",
+            "text": "Criado Instagram: @pwdwallet.pt"
+        }
+    ],
+    "open_w1": true,
+    "open_w2": false
 }
