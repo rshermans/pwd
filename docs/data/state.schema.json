@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pwd.local/docs/data/state.schema.json",
+  "title": "PWD Dashboard State",
+  "type": "object",
+  "required": [
+    "tasks",
+    "kpis",
+    "evidence"
+  ],
+  "properties": {
+    "tasks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    },
+    "kpis": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "text"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{2}/\\d{2}(?:/\\d{4})?$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "patternProperties": {
+    "^open_[a-zA-Z0-9_-]+$": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}
